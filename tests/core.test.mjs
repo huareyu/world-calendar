@@ -10,6 +10,7 @@ import {
     parseMarkers,
     promptInsertionIndex,
     timePhase,
+    validateProfile,
     weatherKind,
     weekdayIndex,
 } from '../core.mjs';
@@ -123,4 +124,16 @@ test('classifies time and bilingual weather for CSS art layers', () => {
     assert.equal(weatherKind('Dense fog'), 'fog');
     assert.equal(weatherKind('Гроза с молниями'), 'storm');
     assert.equal(weatherKind('Sunny, warm'), 'clear');
+});
+
+test('validates profiles without structuredClone support', () => {
+    const original = globalThis.structuredClone;
+    try {
+        globalThis.structuredClone = undefined;
+        const validated = validateProfile(profile);
+        assert.deepEqual(validated.weekdays, profile.weekdays);
+        assert.notEqual(validated, profile);
+    } finally {
+        globalThis.structuredClone = original;
+    }
 });

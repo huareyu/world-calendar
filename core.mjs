@@ -245,7 +245,9 @@ export function holidaysForRange(profile, start, days) {
 }
 
 export function validateProfile(input) {
-    const profile = structuredClone(input);
+    const profile = typeof structuredClone === 'function'
+        ? structuredClone(input)
+        : JSON.parse(JSON.stringify(input));
     if (!profile.name?.trim()) throw new Error('У календаря должно быть название.');
     if (!Array.isArray(profile.weekdays) || profile.weekdays.length < 1) throw new Error('Добавьте хотя бы один день недели.');
     if (!Array.isArray(profile.months) || profile.months.length < 1) throw new Error('Добавьте хотя бы один месяц.');

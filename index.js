@@ -6,6 +6,7 @@ import {
     event_types,
     extension_prompt_roles,
     extension_prompt_types,
+    saveSettings as saveAppSettings,
     saveSettingsDebounced,
     setExtensionPrompt,
 } from '/script.js';
@@ -120,7 +121,7 @@ const TEXT = {
         name: 'Название', weekdaysHelp: 'Дни недели, через запятую', monthsHelp: 'Месяцы, по одному на строку: название | дней',
         holidaysHelp: 'Праздники: день.месяц | название | описание', firstWeekday: 'Первый день недели', leapCycle: 'Високосный цикл',
         leapMonth: 'Месяц прибавки', extraDays: 'Доп. дней', leapExcept: 'Исключать каждый N-й год', leapInclude: 'Но включать каждый N-й',
-        saveProfile: 'Сохранить профиль', delete: 'Удалить', enabled: 'Расширение включено', inject: 'Добавлять календарь в промпт',
+        saveProfile: 'Сохранить профиль', profileSaved: 'Профиль календаря сохранён', profileSaveError: 'Не удалось сохранить профиль', delete: 'Удалить', enabled: 'Расширение включено', inject: 'Добавлять календарь в промпт',
         trackWeather: 'Отслеживать погоду', animateWeather: 'Анимировать погоду', uiLanguage: 'Язык интерфейса', promptLanguage: 'Язык инжекта', injectionDepth: 'Глубина инжекта',
         generateAI: 'Создать профиль с ИИ', newEvent: 'Новое событие', editEvent: 'Изменить событие', description: 'Описание', day: 'День', month: 'Месяц', year: 'Год', time: 'Время', save: 'Сохранить',
         weatherPrompt: 'Погода в текущей сцене. Оставьте пустым, чтобы снова брать её из сообщений:',
@@ -142,7 +143,7 @@ const TEXT = {
         name: 'Name', weekdaysHelp: 'Weekdays, comma-separated', monthsHelp: 'Months, one per line: name | days',
         holidaysHelp: 'Holidays: day.month | name | description', firstWeekday: 'First weekday index', leapCycle: 'Leap cycle',
         leapMonth: 'Leap month', extraDays: 'Extra days', leapExcept: 'Skip every Nth year', leapInclude: 'But include every Nth',
-        saveProfile: 'Save profile', delete: 'Delete', enabled: 'Extension enabled', inject: 'Inject calendar into prompt',
+        saveProfile: 'Save profile', profileSaved: 'Calendar profile saved', profileSaveError: 'Could not save profile', delete: 'Delete', enabled: 'Extension enabled', inject: 'Inject calendar into prompt',
         trackWeather: 'Track weather', animateWeather: 'Animate weather', uiLanguage: 'Interface language', promptLanguage: 'Injection language', injectionDepth: 'Injection depth',
         generateAI: 'Create profile with AI', newEvent: 'New event', editEvent: 'Edit event', description: 'Description', day: 'Day', month: 'Month', year: 'Year', time: 'Time', save: 'Save',
         weatherPrompt: 'Weather in the current scene. Leave empty to read it from messages again:',
@@ -612,7 +613,7 @@ function renderWorlds(world) {
                 <label>${tr('leapExcept')}<input name="leapExcept" type="number" min="0" value="${selected.leap?.exceptEvery || 0}"></label>
                 <label>${tr('leapInclude')}<input name="leapInclude" type="number" min="0" value="${selected.leap?.includeEvery || 0}"></label>
             </div>
-            <div class="worldcal-form-actions"><button type="submit">${icon('floppy-disk')} ${tr('saveProfile')}</button><button class="danger" data-action="delete-profile" type="button">${icon('trash')} ${tr('delete')}</button></div>
+            <div class="worldcal-form-actions"><button class="worldcal-profile-save" type="submit">${icon('floppy-disk')} <span>${tr('saveProfile')}</span></button><button class="danger" data-action="delete-profile" type="button">${icon('trash')} ${tr('delete')}</button></div>
         </form>
         <div class="worldcal-divider"></div>
         <div class="worldcal-profile-grid worldcal-language-grid">
@@ -938,7 +939,7 @@ async function handleSubmit(event) {
     const data = new FormData(form);
     if (form.dataset.form === 'date') saveDate(data);
     if (form.dataset.form === 'event') saveEvent(data, form);
-    if (form.dataset.form === 'profile') saveProfile(data);
+    if (form.dataset.form === 'profile') await saveProfile(data, form);
     if (form.dataset.form === 'weather') saveWeather(data, form);
     if (form.dataset.form === 'ai-profile') await generateAIProfile(data, form);
 }
@@ -1003,7 +1004,9 @@ function saveEvent(data, form) {
     render();
 }
 
-function saveProfile(data) {
+async function saveProfile(data, form) {
+    const button = form.querySelector('.worldcal-profile-save');
+    if (button) button.disabled = true;
     try {
         const months = String(data.get('months')).split('\n').filter(Boolean).map(line => {
             const [name, days] = line.split('|').map(value => value.trim());
@@ -1032,11 +1035,22 @@ function saveProfile(data) {
             holidays,
         });
         const index = settings.profiles.findIndex(item => item.id === profile.id);
+        if (index < 0) throw new Error(`Profile not found: ${profile.id}`);
         settings.profiles[index] = profile;
-        saveSettings();
+        extension_settings[EXTENSION_KEY] = settings;
+        await saveAppSettings();
+        draftProfileId = profile.id;
+        const state = getChatState();
+        if (state.profileId === profile.id) {
+            state.fallbackDate = normalizeDate(profile, state.fallbackDate || {});
+            saveChatState();
+        }
         render();
+        toastr.success(tr('profileSaved'));
     } catch (error) {
-        alert(error.message);
+        console.error('[World Calendar] Profile save failed:', error);
+        toastr.error(`${tr('profileSaveError')}: ${error.message}`);
+        if (button?.isConnected) button.disabled = false;
     }
 }
 
