@@ -381,8 +381,8 @@ function icon(name) {
 
 function createUI() {
     if (document.getElementById('worldcal-root')) return;
-    const holder = document.getElementById('top-settings-holder');
-    if (!holder) {
+    const anchor = document.getElementById('extensions-settings-button');
+    if (!anchor) {
         setTimeout(createUI, 500);
         return;
     }
@@ -390,11 +390,11 @@ function createUI() {
     root.id = 'worldcal-root';
     root.className = 'drawer';
     root.innerHTML = `
-        <div id="worldcal-toggle" class="worldcal-drawer-toggle drawer-header" title="${tr('title')}">
-            <div class="drawer-icon fa-solid fa-calendar-days fa-fw closedIcon"></div>
+        <div id="worldcal-toggle" class="drawer-toggle" title="${tr('title')}">
+            <div class="drawer-icon fa-solid fa-calendar-days fa-fw closedIcon interactable" tabindex="0"></div>
             <span id="worldcal-notification" class="worldcal-notification" hidden></span>
         </div>
-        <section id="worldcal-panel" class="drawer-content fillRight closedDrawer worldcal-panel">
+        <section id="worldcal-panel" class="drawer-content closedDrawer worldcal-panel">
             <header class="worldcal-header">
                 <div>
                     <div id="worldcal-time" class="worldcal-time">08:00</div>
@@ -410,7 +410,7 @@ function createUI() {
             </nav>
             <div id="worldcal-content" class="worldcal-content"></div>
         </section>`;
-    holder.appendChild(root);
+    anchor.after(root);
     bindRootEvents(root);
     render();
 }
@@ -432,6 +432,7 @@ function setDrawerOpen(root, open) {
     const drawerIcon = root.querySelector('.drawer-icon');
     panel.classList.toggle('openDrawer', open);
     panel.classList.toggle('closedDrawer', !open);
+    panel.style.removeProperty('display');
     drawerIcon.classList.toggle('openIcon', open);
     drawerIcon.classList.toggle('closedIcon', !open);
 }

@@ -3,6 +3,11 @@
     font-family: var(--mainFontFamily, system-ui, sans-serif);
 }
 
+#worldcal-panel {
+    color: var(--SmartThemeBodyColor, #e8e8e8);
+    font-family: var(--mainFontFamily, system-ui, sans-serif);
+}
+
 #worldcal-toggle {
     position: relative;
     display: inline-flex;
@@ -31,12 +36,6 @@
 }
 
 .worldcal-panel {
-    position: fixed;
-    z-index: 3100;
-    top: 52px;
-    right: max(6px, calc((100vw - var(--sheldWidth)) / 2));
-    width: min(440px, calc(100vw - 24px));
-    max-height: min(720px, calc(100vh - 68px));
     overflow: hidden;
     border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor, #73777b) 70%, transparent);
     border-radius: 8px;
@@ -1115,9 +1114,6 @@
 
 /* v0.3: compact, native-feeling calendar surface */
 .worldcal-panel {
-    top: calc(var(--topBarBlockSize) + 4px);
-    width: min(520px, calc(100vw - 12px));
-    max-height: min(760px, calc(100vh - 58px));
     border: 1px solid var(--SmartThemeBorderColor, #5b6065);
     border-radius: 6px;
     background: var(--SmartThemeBlurTintColor, #1d2023);
@@ -1433,14 +1429,7 @@
 }
 
 @media (max-width: 520px) {
-    .worldcal-panel {
-        top: calc(var(--topBarBlockSize) + 3px);
-        width: calc(100vw - 12px);
-        max-height: calc(100vh - 52px);
-    }
-
     .worldcal-content {
-        max-height: calc(100vh - 171px);
         padding-right: 12px;
         padding-left: 12px;
     }
@@ -1456,5 +1445,41 @@
 
     .worldcal-title-actions {
         flex-wrap: wrap;
+    }
+}
+
+@media screen and (min-width: 1001px) {
+    #worldcal-panel {
+        position: fixed;
+        z-index: 3100;
+        top: calc(var(--topBarBlockSize) + 4px);
+        right: max(6px, calc((100vw - var(--sheldWidth)) / 2));
+        left: auto;
+        width: min(520px, calc(100vw - 12px));
+        max-height: min(760px, calc(100vh - 58px));
+        margin: 0;
+    }
+}
+
+@media screen and (max-width: 1000px) {
+    #worldcal-panel.openDrawer {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    #worldcal-panel .worldcal-header,
+    #worldcal-panel .worldcal-tabs {
+        flex: 0 0 auto;
+    }
+
+    #worldcal-panel .worldcal-content {
+        min-width: 0;
+        min-height: 0;
+        max-height: none;
+        flex: 1 1 auto;
+        overflow-x: hidden;
+        overflow-y: auto;
+        overscroll-behavior: contain;
     }
 }
