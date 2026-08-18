@@ -1,0 +1,1460 @@
+#worldcal-root {
+    color: var(--SmartThemeBodyColor, #e8e8e8);
+    font-family: var(--mainFontFamily, system-ui, sans-serif);
+}
+
+#worldcal-toggle {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#worldcal-notification {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 7px;
+    height: 7px;
+    border: 1px solid var(--SmartThemeBlurTintColor, #202326);
+    border-radius: 50%;
+    background: #d69b3c;
+}
+
+#worldcal-notification[hidden] {
+    display: none;
+}
+
+#worldcal-notification.unseen {
+    background: #e86969;
+    box-shadow: 0 0 0 3px rgb(232 105 105 / 16%);
+}
+
+.worldcal-panel {
+    position: fixed;
+    z-index: 3100;
+    top: 52px;
+    right: max(6px, calc((100vw - var(--sheldWidth)) / 2));
+    width: min(440px, calc(100vw - 24px));
+    max-height: min(720px, calc(100vh - 68px));
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor, #73777b) 70%, transparent);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--SmartThemeBlurTintColor, #202326) 96%, #101214);
+    box-shadow: 0 18px 55px rgb(0 0 0 / 45%);
+}
+
+.worldcal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 102px;
+    padding: 18px 18px 16px;
+    border-top: 3px solid #43b8ad;
+    border-bottom: 1px solid rgb(255 255 255 / 9%);
+    background: rgb(255 255 255 / 3%);
+}
+
+.worldcal-time {
+    font-size: 32px;
+    font-weight: 650;
+    line-height: 1;
+    letter-spacing: 0;
+}
+
+.worldcal-date {
+    margin-top: 8px;
+    color: color-mix(in srgb, currentColor 75%, transparent);
+    font-size: 13px;
+}
+
+.worldcal-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-bottom: 1px solid rgb(255 255 255 / 9%);
+}
+
+.worldcal-tabs button {
+    min-width: 0;
+    min-height: 48px;
+    padding: 6px 3px;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: color-mix(in srgb, currentColor 65%, transparent);
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.worldcal-tabs button i {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 15px;
+}
+
+.worldcal-tabs button.active {
+    border-bottom-color: #43b8ad;
+    color: inherit;
+    background: rgb(67 184 173 / 8%);
+}
+
+.worldcal-content {
+    max-height: calc(min(720px, 100vh - 68px) - 151px);
+    padding: 16px;
+    overflow: auto;
+}
+
+.worldcal-icon-btn {
+    display: inline-grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+    padding: 0;
+    border: 1px solid rgb(255 255 255 / 12%);
+    border-radius: 6px;
+    background: rgb(0 0 0 / 12%);
+    color: inherit;
+    cursor: pointer;
+}
+
+.worldcal-icon-btn:hover {
+    background: rgb(255 255 255 / 10%);
+}
+
+.worldcal-icon-btn.danger,
+.worldcal-form-actions .danger {
+    color: #e78b8b;
+}
+
+.worldcal-today-band {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 70px;
+    padding: 4px 0 16px;
+    border-bottom: 1px solid rgb(255 255 255 / 9%);
+}
+
+.worldcal-weather-icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    border-radius: 7px;
+    background: #2f817c;
+    color: white;
+    font-size: 22px;
+}
+
+.worldcal-weather-copy {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.worldcal-weather-copy span,
+.worldcal-source,
+.worldcal-event-copy time {
+    color: color-mix(in srgb, currentColor 58%, transparent);
+    font-size: 11px;
+}
+
+.worldcal-weather-copy strong {
+    overflow-wrap: anywhere;
+    font-size: 14px;
+}
+
+.worldcal-section {
+    padding: 16px 0 0;
+}
+
+.worldcal-section + .worldcal-section {
+    margin-top: 16px;
+    border-top: 1px solid rgb(255 255 255 / 9%);
+}
+
+.worldcal-section-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.worldcal-section h3,
+.worldcal-section-title h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 650;
+}
+
+.worldcal-section-title > button,
+.worldcal-title-actions button,
+.worldcal-dialog > button,
+.worldcal-form-actions button {
+    min-height: 32px;
+    padding: 5px 10px;
+    border: 1px solid rgb(255 255 255 / 13%);
+    border-radius: 6px;
+    background: rgb(67 184 173 / 14%);
+    color: inherit;
+    cursor: pointer;
+}
+
+.worldcal-title-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+.worldcal-title-actions button {
+    min-height: 32px;
+    padding: 5px 8px;
+    border: 1px solid rgb(255 255 255 / 13%);
+    border-radius: 6px;
+    background: rgb(67 184 173 / 14%);
+    color: inherit;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.worldcal-event-list {
+    display: grid;
+    gap: 8px;
+}
+
+.worldcal-event {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 64px;
+    margin-top: 8px;
+    padding: 9px;
+    border: 1px solid rgb(255 255 255 / 10%);
+    border-radius: 7px;
+    background: rgb(255 255 255 / 3%);
+}
+
+.worldcal-event.done {
+    opacity: 0.55;
+}
+
+.worldcal-event.done .worldcal-event-copy > strong {
+    text-decoration: line-through;
+}
+
+.worldcal-event-date {
+    display: grid;
+    place-content: center;
+    width: 43px;
+    height: 43px;
+    flex: 0 0 43px;
+    border-left: 3px solid #d69b3c;
+    background: rgb(214 155 60 / 8%);
+    text-align: center;
+}
+
+.worldcal-event-date strong {
+    font-size: 17px;
+    line-height: 1;
+}
+
+.worldcal-event-date span {
+    margin-top: 3px;
+    font-size: 10px;
+}
+
+.worldcal-event-copy {
+    min-width: 0;
+    flex: 1;
+}
+
+.worldcal-event-copy > div {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 3px;
+}
+
+.worldcal-source i {
+    width: 12px;
+    margin-right: 3px;
+    text-align: center;
+}
+
+.worldcal-event.type-holiday .worldcal-source,
+.worldcal-event.type-holiday .worldcal-event-date strong {
+    color: #d9a84f;
+}
+
+.worldcal-event.type-manual .worldcal-source,
+.worldcal-event.type-story .worldcal-source {
+    color: #63bcb3;
+}
+
+.worldcal-event.type-world .worldcal-source,
+.worldcal-event.type-world .worldcal-event-date strong {
+    color: #d97777;
+}
+
+.worldcal-event-copy > strong {
+    display: block;
+    overflow-wrap: anywhere;
+    font-size: 13px;
+}
+
+.worldcal-event-copy p {
+    margin: 4px 0 0;
+    color: color-mix(in srgb, currentColor 68%, transparent);
+    font-size: 11px;
+    line-height: 1.35;
+}
+
+.worldcal-event-actions {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 5px;
+}
+
+.worldcal-empty {
+    padding: 24px 8px;
+    color: color-mix(in srgb, currentColor 55%, transparent);
+    text-align: center;
+    font-size: 12px;
+}
+
+.worldcal-now-editor form {
+    display: grid;
+    grid-template-columns: 92px 58px minmax(110px, 1fr) 76px 34px;
+    gap: 6px;
+}
+
+.worldcal-now-editor h3 {
+    margin-bottom: 10px;
+}
+
+.worldcal-panel input,
+.worldcal-panel select,
+.worldcal-panel textarea,
+.worldcal-dialog input,
+.worldcal-dialog select,
+.worldcal-dialog textarea {
+    width: 100%;
+    min-width: 0;
+    padding: 7px 8px;
+    border: 1px solid rgb(255 255 255 / 14%);
+    border-radius: 5px;
+    background: rgb(0 0 0 / 18%);
+    color: inherit;
+    font: inherit;
+    letter-spacing: 0;
+}
+
+.worldcal-now-editor form > button {
+    width: 34px;
+    padding: 0;
+    border: 0;
+    border-radius: 5px;
+    background: #2f817c;
+    color: white;
+}
+
+.worldcal-calendar-nav {
+    display: grid;
+    grid-template-columns: 34px 1fr 34px;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.worldcal-weekdays,
+.worldcal-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--weekdays), minmax(0, 1fr));
+    gap: 4px;
+}
+
+.worldcal-weekdays {
+    margin-bottom: 5px;
+}
+
+.worldcal-weekdays span {
+    overflow: hidden;
+    color: color-mix(in srgb, currentColor 55%, transparent);
+    font-size: 10px;
+    text-align: center;
+    text-overflow: ellipsis;
+}
+
+.worldcal-day {
+    position: relative;
+    aspect-ratio: 1;
+    min-width: 0;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    background: rgb(255 255 255 / 4%);
+    color: inherit;
+    font-size: 12px;
+}
+
+.worldcal-day.empty {
+    background: transparent;
+}
+
+.worldcal-day.today {
+    border-color: #43b8ad;
+    background: rgb(67 184 173 / 16%);
+    font-weight: 700;
+}
+
+.worldcal-day.has-event::after {
+    position: absolute;
+    right: 4px;
+    bottom: 4px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #d69b3c;
+    content: '';
+}
+
+.worldcal-day small {
+    position: absolute;
+    top: 2px;
+    right: 3px;
+    color: #d69b3c;
+    font-size: 8px;
+}
+
+.worldcal-panel label,
+.worldcal-dialog label {
+    display: grid;
+    gap: 5px;
+    margin-bottom: 11px;
+    color: color-mix(in srgb, currentColor 72%, transparent);
+    font-size: 11px;
+}
+
+.worldcal-divider {
+    height: 1px;
+    margin: 15px 0;
+    background: rgb(255 255 255 / 9%);
+}
+
+.worldcal-profile-form {
+    margin-top: 14px;
+}
+
+.worldcal-profile-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.worldcal-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.worldcal-switch {
+    display: flex !important;
+    grid-template-columns: none;
+    align-items: center;
+    gap: 8px !important;
+}
+
+.worldcal-switch input {
+    width: 16px;
+    height: 16px;
+}
+
+.worldcal-language-grid {
+    margin-bottom: 10px;
+}
+
+.worldcal-modal {
+    position: fixed;
+    z-index: 4000;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 16px;
+    background: rgb(0 0 0 / 55%);
+}
+
+.worldcal-dialog {
+    width: min(420px, 100%);
+    max-height: calc(100vh - 32px);
+    padding: 18px;
+    overflow: auto;
+    border: 1px solid rgb(255 255 255 / 16%);
+    border-radius: 8px;
+    background: var(--SmartThemeBlurTintColor, #202326);
+    color: var(--SmartThemeBodyColor, #e8e8e8);
+    box-shadow: 0 20px 60px rgb(0 0 0 / 55%);
+}
+
+.worldcal-ai-dialog {
+    width: min(520px, 100%);
+}
+
+.worldcal-ai-sources {
+    display: grid;
+    grid-template-columns: 1fr 150px;
+    align-items: center;
+    gap: 4px 14px;
+    margin: 4px 0 14px;
+    padding: 12px 0;
+    border-top: 1px solid rgb(255 255 255 / 9%);
+    border-bottom: 1px solid rgb(255 255 255 / 9%);
+}
+
+.worldcal-ai-sources label {
+    margin: 0;
+}
+
+.worldcal-ai-sources .worldcal-ai-max {
+    grid-column: 1 / -1;
+}
+
+.worldcal-ai-generate {
+    width: 100%;
+    min-height: 38px !important;
+    background: #2f817c !important;
+    color: white !important;
+}
+
+.worldcal-ai-generate:disabled {
+    cursor: wait;
+    opacity: 0.55;
+}
+
+@media (max-width: 520px) {
+    .worldcal-panel {
+        top: 46px;
+        right: 6px;
+        width: calc(100vw - 12px);
+        max-height: calc(100vh - 54px);
+    }
+
+    .worldcal-content {
+        max-height: calc(100vh - 205px);
+    }
+
+    .worldcal-now-editor form {
+        grid-template-columns: 1fr 64px;
+    }
+
+    .worldcal-now-editor form select,
+    .worldcal-now-editor form input[name="year"] {
+        grid-column: span 1;
+    }
+
+    .worldcal-now-editor form > button {
+        width: 100%;
+    }
+
+    .worldcal-event-actions {
+        flex-direction: column;
+    }
+
+    .worldcal-ai-sources {
+        grid-template-columns: 1fr;
+    }
+}
+
+.worldcal-scene {
+    position: relative;
+    height: 146px;
+    overflow: hidden;
+    border: 1px solid rgb(255 255 255 / 12%);
+    border-radius: 6px;
+    isolation: isolate;
+    color: #fff;
+    box-shadow: inset 0 -40px 60px rgb(0 0 0 / 14%);
+}
+
+.worldcal-scene.phase-dawn {
+    background: linear-gradient(160deg, #5f5877 0%, #a96b68 55%, #d99167 100%);
+}
+
+.worldcal-scene.phase-day {
+    background: linear-gradient(155deg, #4c90ce 0%, #70a9dc 58%, #a8c9e7 100%);
+}
+
+.worldcal-scene.phase-sunset {
+    background: linear-gradient(155deg, #5e3f68 0%, #b6533d 54%, #d67843 100%);
+}
+
+.worldcal-scene.phase-night {
+    background: linear-gradient(155deg, #111329 0%, #20203d 56%, #30233e 100%);
+}
+
+.worldcal-scene-sky {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.worldcal-scene-sky::after {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    background: transparent;
+    content: '';
+    transition: background-color 180ms ease;
+}
+
+.worldcal-scene.weather-cloudy .worldcal-scene-sky::after,
+.worldcal-scene.weather-snow .worldcal-scene-sky::after {
+    background: rgb(26 34 43 / 16%);
+}
+
+.worldcal-scene.weather-rain .worldcal-scene-sky::after {
+    background: linear-gradient(180deg, rgb(29 41 54 / 52%), rgb(40 55 66 / 34%));
+}
+
+.worldcal-scene.weather-storm .worldcal-scene-sky::after {
+    background: rgb(10 13 22 / 39%);
+}
+
+.worldcal-scene-orb {
+    position: absolute;
+    z-index: 1;
+    top: 17px;
+    right: 48px;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #f6df92;
+    box-shadow: 0 0 30px rgb(255 225 141 / 55%);
+}
+
+.phase-dawn .worldcal-scene-orb {
+    top: 65px;
+    right: 56px;
+    background: #f3bd82;
+}
+
+.phase-sunset .worldcal-scene-orb {
+    top: 61px;
+    right: 53px;
+    background: #efad66;
+    box-shadow: 0 0 34px rgb(241 160 91 / 55%);
+}
+
+.phase-night .worldcal-scene-orb {
+    top: 19px;
+    right: 52px;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    box-shadow: inset 9px -3px 0 #dce2f1, 0 0 17px rgb(218 225 245 / 22%);
+    transform: rotate(-12deg);
+}
+
+.weather-cloudy .worldcal-scene-orb,
+.weather-snow .worldcal-scene-orb {
+    opacity: 0.38;
+}
+
+.weather-rain .worldcal-scene-orb {
+    filter: blur(2px);
+    opacity: 0.1;
+}
+
+.weather-storm .worldcal-scene-orb {
+    opacity: 0;
+}
+
+.worldcal-scene-stars {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 180ms ease;
+}
+
+.phase-night .worldcal-scene-stars {
+    opacity: 0.82;
+}
+
+.phase-dawn .worldcal-scene-stars {
+    opacity: 0.24;
+}
+
+.worldcal-scene-stars i {
+    position: absolute;
+    top: 19%;
+    left: calc(4% + var(--i) * 6.6%);
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 4px rgb(255 255 255 / 58%);
+}
+
+.worldcal-scene-stars i:nth-child(even) {
+    top: 52%;
+    opacity: 0.52;
+}
+
+.worldcal-scene-stars i:nth-child(3n) {
+    top: 34%;
+    width: 1px;
+    height: 1px;
+}
+
+.worldcal-scene-cloud {
+    position: absolute;
+    z-index: 4;
+    width: 92px;
+    height: 22px;
+    border-radius: 20px;
+    background: rgb(238 244 248 / 64%);
+    filter: blur(0.2px);
+    opacity: 0.14;
+}
+
+.worldcal-scene-cloud::before,
+.worldcal-scene-cloud::after {
+    position: absolute;
+    bottom: 7px;
+    border-radius: 50%;
+    background: inherit;
+    content: '';
+}
+
+.worldcal-scene-cloud::before {
+    left: 16px;
+    width: 34px;
+    height: 34px;
+}
+
+.worldcal-scene-cloud::after {
+    right: 15px;
+    width: 43px;
+    height: 43px;
+}
+
+.worldcal-scene-cloud.cloud-one {
+    top: 27px;
+    left: -24px;
+    transform: scale(0.72);
+}
+
+.worldcal-scene-cloud.cloud-two {
+    top: 48px;
+    right: -15px;
+    transform: scale(1.08);
+}
+
+.worldcal-scene-cloud.cloud-three {
+    top: 88px;
+    left: 42%;
+    transform: scale(0.6);
+}
+
+.weather-cloudy .worldcal-scene-cloud,
+.weather-rain .worldcal-scene-cloud,
+.weather-snow .worldcal-scene-cloud,
+.weather-storm .worldcal-scene-cloud {
+    opacity: 0.74;
+    animation: worldcal-cloud-drift 16s ease-in-out infinite alternate;
+}
+
+.weather-rain .worldcal-scene-cloud,
+.weather-storm .worldcal-scene-cloud {
+    background: rgb(101 116 130 / 94%);
+    box-shadow: 0 12px 22px rgb(15 24 34 / 18%);
+}
+
+.weather-rain .worldcal-scene-cloud.cloud-one,
+.weather-storm .worldcal-scene-cloud.cloud-one {
+    top: 18px;
+    left: -9px;
+    transform: scale(0.94);
+}
+
+.weather-rain .worldcal-scene-cloud.cloud-two,
+.weather-storm .worldcal-scene-cloud.cloud-two {
+    top: 23px;
+    right: -3px;
+    transform: scale(1.18);
+}
+
+.weather-rain .worldcal-scene-cloud.cloud-three,
+.weather-storm .worldcal-scene-cloud.cloud-three {
+    top: 50px;
+    left: 42%;
+    transform: scale(0.72);
+}
+
+.weather-storm .worldcal-scene-cloud {
+    opacity: 0.9;
+}
+
+.worldcal-scene-precipitation {
+    position: absolute;
+    z-index: 5;
+    inset: 0;
+    display: none;
+}
+
+.weather-rain .worldcal-scene-precipitation,
+.weather-snow .worldcal-scene-precipitation,
+.weather-storm .worldcal-scene-precipitation {
+    display: block;
+}
+
+.weather-rain .worldcal-scene-precipitation::after,
+.weather-storm .worldcal-scene-precipitation::after {
+    position: absolute;
+    right: 0;
+    bottom: -12px;
+    left: 0;
+    height: 38px;
+    background: linear-gradient(0deg, rgb(205 225 235 / 18%), transparent);
+    filter: blur(5px);
+    content: '';
+}
+
+.worldcal-scene-precipitation i {
+    position: absolute;
+    top: -32px;
+    left: calc(2% + var(--i) * 5.7%);
+}
+
+.weather-rain .worldcal-scene-precipitation i,
+.weather-storm .worldcal-scene-precipitation i {
+    width: 1px;
+    height: 17px;
+    background: rgb(221 237 247 / 62%);
+    box-shadow: 13px 25px 0 rgb(221 237 247 / 38%), -9px 55px 0 rgb(221 237 247 / 48%);
+    transform: rotate(10deg);
+    animation: worldcal-rain 1.08s linear infinite;
+    animation-delay: calc(var(--i) * -0.17s);
+}
+
+.weather-rain .worldcal-scene-precipitation i:nth-child(3n) {
+    height: 11px;
+    opacity: 0.62;
+    animation-duration: 0.89s;
+}
+
+.weather-rain .worldcal-scene-precipitation i:nth-child(4n) {
+    animation-duration: 1.27s;
+}
+
+.weather-storm .worldcal-scene-precipitation i {
+    height: 21px;
+    animation-duration: 0.72s;
+    animation-delay: calc(var(--i) * -0.11s);
+}
+
+.weather-snow .worldcal-scene-precipitation i {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 86%);
+    box-shadow: 0 0 4px rgb(255 255 255 / 35%);
+    animation: worldcal-snow 4s ease-in infinite;
+    animation-delay: calc(var(--i) * -0.31s);
+}
+
+.worldcal-scene-fog {
+    position: absolute;
+    z-index: 6;
+    inset: 0;
+    display: none;
+}
+
+.weather-fog .worldcal-scene-fog {
+    display: block;
+}
+
+.worldcal-scene-fog i {
+    position: absolute;
+    right: -15%;
+    left: -15%;
+    height: 20px;
+    border-radius: 50%;
+    background: rgb(228 235 235 / 30%);
+    filter: blur(7px);
+    animation: worldcal-fog 9s ease-in-out infinite alternate;
+}
+
+.worldcal-scene-fog i:nth-child(1) { top: 30%; }
+.worldcal-scene-fog i:nth-child(2) { top: 52%; animation-delay: -3s; }
+.worldcal-scene-fog i:nth-child(3) { top: 72%; animation-delay: -6s; }
+
+.worldcal-scene-lightning {
+    position: absolute;
+    z-index: 7;
+    top: 42px;
+    right: 25%;
+    display: none;
+    width: 3px;
+    height: 44px;
+    background: #eef3c0;
+    box-shadow: 0 0 12px #f7ffb2;
+    clip-path: polygon(45% 0, 100% 0, 63% 43%, 100% 43%, 0 100%, 35% 54%, 0 54%);
+}
+
+.weather-storm .worldcal-scene-lightning {
+    display: block;
+    animation: worldcal-lightning 5.5s steps(1) infinite;
+}
+
+.worldcal-scene-wind {
+    position: absolute;
+    z-index: 6;
+    inset: 0;
+    display: none;
+}
+
+.weather-wind .worldcal-scene-wind {
+    display: block;
+}
+
+.worldcal-scene-wind i {
+    position: absolute;
+    left: -30%;
+    width: 30%;
+    height: 1px;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 38%);
+    animation: worldcal-wind 2.8s ease-in-out infinite;
+}
+
+.worldcal-scene-wind i:nth-child(1) { top: 30%; }
+.worldcal-scene-wind i:nth-child(2) { top: 53%; animation-delay: -1.2s; }
+.worldcal-scene-wind i:nth-child(3) { top: 72%; animation-delay: -2s; }
+
+.worldcal-scene-content {
+    position: relative;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: 112px 1px minmax(0, 1fr) 30px;
+    align-items: center;
+    gap: 13px;
+    height: 100%;
+    padding: 15px 16px;
+    background: linear-gradient(90deg, rgb(6 10 18 / 20%), transparent 64%);
+    text-shadow: 0 1px 5px rgb(0 0 0 / 42%);
+}
+
+.worldcal-scene-time {
+    font-size: 31px;
+    font-weight: 620;
+    line-height: 1;
+    letter-spacing: 0;
+}
+
+.worldcal-scene-rule {
+    width: 1px;
+    height: 56px;
+    background: rgb(255 255 255 / 22%);
+}
+
+.worldcal-scene-meta {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.worldcal-scene-meta strong {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.35;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+.worldcal-scene-meta span {
+    overflow: hidden;
+    color: rgb(255 255 255 / 72%);
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.worldcal-scene-edit {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 1px solid rgb(255 255 255 / 18%);
+    border-radius: 50%;
+    background: rgb(0 0 0 / 13%);
+    color: #fff;
+    opacity: 0.72;
+}
+
+.worldcal-scene-edit:hover {
+    background: rgb(255 255 255 / 12%);
+    opacity: 1;
+}
+
+@keyframes worldcal-cloud-drift {
+    from { translate: -8px 0; }
+    to { translate: 12px 1px; }
+}
+
+@keyframes worldcal-rain {
+    from { translate: 15px -38px; opacity: 0; }
+    12% { opacity: 0.82; }
+    82% { opacity: 0.64; }
+    to { translate: -24px 224px; opacity: 0; }
+}
+
+@keyframes worldcal-snow {
+    from { translate: 0 -10px; opacity: 0; }
+    15% { opacity: 1; }
+    50% { translate: 12px 75px; }
+    to { translate: -6px 165px; opacity: 0.2; }
+}
+
+@keyframes worldcal-fog {
+    from { translate: -7% 0; opacity: 0.55; }
+    to { translate: 7% 1px; opacity: 0.92; }
+}
+
+@keyframes worldcal-lightning {
+    0%, 86%, 90%, 100% { opacity: 0; }
+    87%, 89% { opacity: 1; }
+    88% { opacity: 0.18; }
+}
+
+@keyframes worldcal-wind {
+    0% { translate: 0 0; opacity: 0; }
+    20% { opacity: 0.7; }
+    100% { translate: 155% -3px; opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .worldcal-scene * {
+        animation: none !important;
+    }
+
+    .worldcal-scene-precipitation i {
+        top: calc(-18px + var(--i) * 10px);
+        opacity: 0.62;
+    }
+
+    .worldcal-scene-precipitation i:nth-child(even) {
+        translate: 13px 0;
+    }
+
+    .worldcal-scene-lightning {
+        opacity: 0;
+    }
+}
+
+.worldcal-scene.weather-motion-off * {
+    animation: none !important;
+}
+
+.weather-motion-off .worldcal-scene-precipitation i {
+    top: calc(-18px + var(--i) * 10px);
+    opacity: 0.62;
+}
+
+.weather-motion-off .worldcal-scene-precipitation i:nth-child(even) {
+    translate: 13px 0;
+}
+
+.weather-motion-off .worldcal-scene-lightning {
+    opacity: 0;
+}
+
+.weather-motion-off .worldcal-scene-wind i {
+    left: 12%;
+    opacity: 0.52;
+}
+
+.weather-motion-off .worldcal-scene-wind i:nth-child(2) {
+    left: 43%;
+}
+
+.weather-motion-off .worldcal-scene-wind i:nth-child(3) {
+    left: 68%;
+}
+
+@media (max-width: 520px) {
+    .worldcal-scene {
+        height: 132px;
+    }
+
+    .worldcal-scene-content {
+        grid-template-columns: 92px 1px minmax(0, 1fr) 28px;
+        gap: 9px;
+        padding: 12px;
+    }
+
+    .worldcal-scene-time {
+        font-size: 27px;
+    }
+
+    .worldcal-scene-rule {
+        height: 48px;
+    }
+}
+
+/* v0.3: compact, native-feeling calendar surface */
+.worldcal-panel {
+    top: calc(var(--topBarBlockSize) + 4px);
+    width: min(520px, calc(100vw - 12px));
+    max-height: min(760px, calc(100vh - 58px));
+    border: 1px solid var(--SmartThemeBorderColor, #5b6065);
+    border-radius: 6px;
+    background: var(--SmartThemeBlurTintColor, #1d2023);
+    box-shadow: 0 14px 38px rgb(0 0 0 / 38%);
+}
+
+.worldcal-header {
+    min-height: 76px;
+    padding: 13px 16px;
+    border-top: 0;
+    border-bottom-color: rgb(255 255 255 / 8%);
+    background: rgb(255 255 255 / 2%);
+    box-shadow: inset 3px 0 #4ca89f;
+}
+
+.worldcal-time {
+    font-size: 27px;
+    font-weight: 600;
+}
+
+.worldcal-date {
+    margin-top: 5px;
+    color: color-mix(in srgb, currentColor 68%, transparent);
+    font-size: 12px;
+}
+
+.worldcal-tabs {
+    padding: 0 10px;
+    background: rgb(0 0 0 / 8%);
+}
+
+.worldcal-tabs button {
+    min-height: 42px;
+    padding: 5px 2px;
+    font-size: 10px;
+}
+
+.worldcal-tabs button i {
+    display: inline-block;
+    margin: 0 4px 0 0;
+    font-size: 12px;
+}
+
+.worldcal-tabs button.active {
+    border-bottom-color: #4ca89f;
+    background: transparent;
+}
+
+.worldcal-content {
+    max-height: calc(min(760px, 100vh - 58px) - 119px);
+    padding: 14px 16px 18px;
+}
+
+.worldcal-today-band {
+    min-height: 56px;
+    padding: 3px 0 14px;
+}
+
+.worldcal-weather-icon {
+    width: 38px;
+    height: 38px;
+    flex-basis: 38px;
+    border: 1px solid rgb(255 255 255 / 10%);
+    border-radius: 5px;
+    background: rgb(76 168 159 / 10%);
+    color: #72c7be;
+    font-size: 17px;
+}
+
+.worldcal-weather-copy strong {
+    font-size: 13px;
+    font-weight: 550;
+    line-height: 1.4;
+    white-space: pre-wrap;
+}
+
+.worldcal-section {
+    padding-top: 14px;
+}
+
+.worldcal-section + .worldcal-section {
+    margin-top: 14px;
+}
+
+.worldcal-section-title {
+    margin-bottom: 8px;
+}
+
+.worldcal-section h3,
+.worldcal-section-title h3 {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.worldcal-section-title > button,
+.worldcal-title-actions button,
+.worldcal-dialog > button,
+.worldcal-form-actions button {
+    min-height: 30px;
+    border-color: rgb(255 255 255 / 11%);
+    border-radius: 5px;
+    background: rgb(255 255 255 / 5%);
+}
+
+.worldcal-event-list {
+    gap: 0;
+}
+
+.worldcal-event {
+    min-height: 59px;
+    margin: 0;
+    padding: 10px 2px;
+    border: 0;
+    border-bottom: 1px solid rgb(255 255 255 / 8%);
+    border-radius: 0;
+    background: transparent;
+}
+
+.worldcal-event:last-child {
+    border-bottom: 0;
+}
+
+.worldcal-event-date {
+    width: 38px;
+    height: 39px;
+    flex-basis: 38px;
+    border: 0;
+    border-right: 1px solid rgb(214 155 60 / 45%);
+    background: transparent;
+}
+
+.worldcal-event-date strong {
+    color: #e0ad59;
+    font-size: 16px;
+}
+
+.worldcal-event-copy > strong {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.worldcal-event-copy p {
+    max-width: 52ch;
+    font-size: 11px;
+}
+
+.worldcal-event-actions .worldcal-icon-btn {
+    width: 29px;
+    height: 29px;
+    flex-basis: 29px;
+    border-color: transparent;
+    background: transparent;
+}
+
+.worldcal-chronicle {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid rgb(255 255 255 / 10%);
+}
+
+.worldcal-chronicle .worldcal-section-title h3 i {
+    margin-right: 6px;
+    color: #d6a558;
+}
+
+.worldcal-now-editor form {
+    grid-template-columns: 84px 55px minmax(120px, 1fr) 72px 32px;
+}
+
+.worldcal-panel input,
+.worldcal-panel select,
+.worldcal-panel textarea,
+.worldcal-dialog input,
+.worldcal-dialog select,
+.worldcal-dialog textarea {
+    border-color: rgb(255 255 255 / 11%);
+    border-radius: 4px;
+    background: rgb(0 0 0 / 14%);
+}
+
+.worldcal-calendar-nav {
+    min-height: 38px;
+    margin-bottom: 8px;
+}
+
+.worldcal-weekdays,
+.worldcal-grid {
+    gap: 3px;
+}
+
+.worldcal-day {
+    border-radius: 4px;
+    background: rgb(255 255 255 / 2.5%);
+    transition: background-color 120ms ease, border-color 120ms ease;
+}
+
+.worldcal-day:not(.empty):hover {
+    border-color: rgb(255 255 255 / 15%);
+    background: rgb(255 255 255 / 7%);
+}
+
+.worldcal-day.today {
+    border-color: #4ca89f;
+    background: rgb(76 168 159 / 10%);
+}
+
+.worldcal-day.has-event::after {
+    display: none;
+}
+
+.worldcal-day-markers {
+    position: absolute;
+    right: 3px;
+    bottom: 3px;
+    left: 3px;
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+    pointer-events: none;
+}
+
+.worldcal-day-markers i,
+.worldcal-calendar-legend i {
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    flex: 0 0 5px;
+    border-radius: 50%;
+}
+
+.marker-holiday {
+    background: #d9a84f;
+}
+
+.marker-event {
+    background: #58b7ad;
+}
+
+.marker-world {
+    background: #d97777;
+}
+
+.worldcal-calendar-legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 7px 12px;
+    margin-top: 11px;
+    color: color-mix(in srgb, currentColor 56%, transparent);
+    font-size: 10px;
+}
+
+.worldcal-calendar-legend > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.worldcal-holiday-note {
+    margin: -2px 0 12px;
+    padding: 8px 9px;
+    border-left: 2px solid #d9a84f;
+    background: rgb(217 168 79 / 7%);
+    color: color-mix(in srgb, currentColor 68%, transparent);
+    font-size: 11px;
+}
+
+.worldcal-event-once[hidden],
+.worldcal-holiday-note[hidden] {
+    display: none !important;
+}
+
+.worldcal-modal {
+    background: rgb(0 0 0 / 62%);
+    backdrop-filter: blur(2px);
+}
+
+.worldcal-dialog {
+    border-color: var(--SmartThemeBorderColor, #5b6065);
+    border-radius: 6px;
+    background: var(--SmartThemeBlurTintColor, #1d2023);
+    box-shadow: 0 18px 48px rgb(0 0 0 / 48%);
+}
+
+.worldcal-dialog-kicker {
+    display: block;
+    margin-bottom: 3px;
+    color: color-mix(in srgb, currentColor 50%, transparent);
+    font-size: 10px;
+}
+
+.worldcal-day-dialog {
+    width: min(500px, 100%);
+}
+
+.worldcal-day-summary {
+    margin: 4px 0 14px;
+    border-top: 1px solid rgb(255 255 255 / 8%);
+}
+
+.worldcal-day-add {
+    width: 100%;
+    min-height: 34px;
+    border: 1px dashed rgb(255 255 255 / 18%);
+    border-radius: 4px;
+    background: transparent;
+    color: color-mix(in srgb, currentColor 72%, transparent);
+}
+
+.worldcal-day-add:hover {
+    border-color: #4ca89f;
+    color: inherit;
+}
+
+@media (max-width: 520px) {
+    .worldcal-panel {
+        top: calc(var(--topBarBlockSize) + 3px);
+        width: calc(100vw - 12px);
+        max-height: calc(100vh - 52px);
+    }
+
+    .worldcal-content {
+        max-height: calc(100vh - 171px);
+        padding-right: 12px;
+        padding-left: 12px;
+    }
+
+    .worldcal-tabs button i {
+        display: block;
+        margin: 0 0 3px;
+    }
+
+    .worldcal-now-editor form {
+        grid-template-columns: 1fr 60px;
+    }
+
+    .worldcal-title-actions {
+        flex-wrap: wrap;
+    }
+}
