@@ -379,6 +379,16 @@ function icon(name) {
     return `<i class="fa-solid fa-${name}"></i>`;
 }
 
+function syncViewportHeight() {
+    const height = window.visualViewport?.height || window.innerHeight;
+    document.documentElement.style.setProperty('--worldcal-viewport-height', `${Math.max(240, Math.round(height))}px`);
+}
+
+function focusModalField(modal, selector) {
+    if (window.matchMedia('(pointer: coarse)').matches || window.innerWidth <= 768) return;
+    requestAnimationFrame(() => modal.querySelector(selector)?.focus({ preventScroll: true }));
+}
+
 function createUI() {
     if (document.getElementById('worldcal-root')) return;
     const anchor = document.getElementById('extensions-settings-button');
@@ -626,7 +636,7 @@ function openEventEditor(existing = null, seedDate = null) {
         <div class="worldcal-section-title"><h3>${existing?.id ? tr('editEvent') : tr('newEvent')}</h3><button class="worldcal-icon-btn" data-action="dismiss-modal" type="button">${icon('xmark')}</button></div>
         <input type="hidden" name="id" value="${escapeHtml(event.id || '')}">
         <label>${tr('entryType')}<select name="entryType"><option value="event">${tr('oneTimeEvent')}</option><option value="holiday">${tr('recurringHoliday')}</option></select></label>
-        <label>${tr('name')}<input name="title" maxlength="100" value="${escapeHtml(event.title)}" required autofocus></label>
+        <label>${tr('name')}<input name="title" maxlength="100" value="${escapeHtml(event.title)}" required></label>
         <label>${tr('description')}<textarea name="description" rows="3" maxlength="400">${escapeHtml(event.description || '')}</textarea></label>
         <div class="worldcal-profile-grid">
             <label>${tr('day')}<input name="day" type="number" min="1" value="${event.date.day}" required></label>
@@ -641,6 +651,8 @@ function openEventEditor(existing = null, seedDate = null) {
     modal.addEventListener('click', handleClick);
     modal.addEventListener('submit', handleSubmit);
     modal.addEventListener('change', handleModalChange);
+    syncViewportHeight();
+    focusModalField(modal, 'input[name="title"]');
 }
 
 function handleModalChange(event) {
@@ -678,13 +690,14 @@ function openWeatherEditor() {
     modal.className = 'worldcal-modal';
     modal.innerHTML = `<form data-form="weather" class="worldcal-dialog">
         <div class="worldcal-section-title"><h3>${icon('cloud-sun')} ${tr('weather')}</h3><button class="worldcal-icon-btn" data-action="dismiss-modal" type="button">${icon('xmark')}</button></div>
-        <textarea name="weather" rows="8" maxlength="1000" autofocus>${escapeHtml(world.state.weatherOverride || world.weather)}</textarea>
+        <textarea name="weather" rows="8" maxlength="1000">${escapeHtml(world.state.weatherOverride || world.weather)}</textarea>
         <div class="worldcal-form-actions"><button type="button" data-action="clear-weather">${icon('rotate-left')} ${tr('restore')}</button><button type="submit">${icon('check')} ${tr('save')}</button></div>
     </form>`;
     document.body.appendChild(modal);
     modal.addEventListener('click', handleClick);
     modal.addEventListener('submit', handleSubmit);
-    modal.querySelector('textarea')?.focus();
+    syncViewportHeight();
+    focusModalField(modal, 'textarea');
 }
 
 function openAIProfileGenerator() {
@@ -711,7 +724,8 @@ function openAIProfileGenerator() {
     document.body.appendChild(modal);
     modal.addEventListener('click', handleClick);
     modal.addEventListener('submit', handleSubmit);
-    modal.querySelector('textarea[name="setting"]')?.focus();
+    syncViewportHeight();
+    focusModalField(modal, 'textarea[name="setting"]');
 }
 
 function cleanContextText(value, limit = 12000) {
@@ -1092,6 +1106,9 @@ function refreshFromChat() {
 
 jQuery(() => {
     loadSettings();
+    syncViewportHeight();
+    window.visualViewport?.addEventListener('resize', syncViewportHeight);
+    window.addEventListener('orientationchange', syncViewportHeight);
     createUI();
     eventSource.on(event_types.GENERATION_AFTER_COMMANDS, syncPrompt);
     eventSource.on(event_types.MESSAGE_RECEIVED, refreshFromChat);

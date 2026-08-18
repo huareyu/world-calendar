@@ -479,24 +479,36 @@
 
 .worldcal-modal {
     position: fixed;
-    z-index: 4000;
+    z-index: 10050;
     inset: 0;
-    display: grid;
-    place-items: center;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    width: 100dvw;
+    height: var(--worldcal-viewport-height, 100dvh);
     padding: 16px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    box-sizing: border-box;
     background: rgb(0 0 0 / 55%);
+    overscroll-behavior: contain;
+    touch-action: pan-y;
 }
 
 .worldcal-dialog {
     width: min(420px, 100%);
-    max-height: calc(100vh - 32px);
+    max-height: calc(var(--worldcal-viewport-height, 100dvh) - 32px);
+    margin: auto;
     padding: 18px;
     overflow: auto;
+    box-sizing: border-box;
     border: 1px solid rgb(255 255 255 / 16%);
     border-radius: 8px;
     background: var(--SmartThemeBlurTintColor, #202326);
     color: var(--SmartThemeBodyColor, #e8e8e8);
     box-shadow: 0 20px 60px rgb(0 0 0 / 55%);
+    overscroll-behavior: contain;
+    touch-action: pan-y;
 }
 
 .worldcal-ai-dialog {
@@ -535,17 +547,6 @@
 }
 
 @media (max-width: 520px) {
-    .worldcal-panel {
-        top: 46px;
-        right: 6px;
-        width: calc(100vw - 12px);
-        max-height: calc(100vh - 54px);
-    }
-
-    .worldcal-content {
-        max-height: calc(100vh - 205px);
-    }
-
     .worldcal-now-editor form {
         grid-template-columns: 1fr 64px;
     }
@@ -1481,5 +1482,38 @@
         overflow-x: hidden;
         overflow-y: auto;
         overscroll-behavior: contain;
+    }
+
+    .worldcal-modal {
+        padding-top: max(10px, env(safe-area-inset-top));
+        padding-right: max(10px, env(safe-area-inset-right));
+        padding-bottom: max(10px, env(safe-area-inset-bottom));
+        padding-left: max(10px, env(safe-area-inset-left));
+    }
+
+    .worldcal-dialog,
+    .worldcal-ai-dialog,
+    .worldcal-day-dialog {
+        width: 100%;
+        max-width: none;
+        max-height: calc(var(--worldcal-viewport-height, 100dvh) - 20px);
+        padding: 14px;
+    }
+
+    .worldcal-modal input,
+    .worldcal-modal select,
+    .worldcal-modal textarea {
+        min-width: 0;
+        max-width: 100%;
+        font-size: 16px;
+    }
+
+    .worldcal-ai-sources {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .worldcal-ai-generate {
+        flex: 0 0 auto;
+        min-height: 44px !important;
     }
 }
